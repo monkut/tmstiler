@@ -7,14 +7,13 @@ class InvalidCoordinateForZoom(Exception):
 
 class RasterTileManager:
 
-    def __init__(self, layers_config=None):
+    def __init__(self):
         self.spherical_mercator_xmax = 20037508.34
         self.spherical_mercator_ymax = 20037508.34
         self.spherical_mercator_xmin = -20037508.34
         self.spherical_mercator_ymin = -20037508.34
         self.tile_pixels_width = 256
         self.tile_pixels_height = 256
-        self.max_resolution = 156543.0339
 
     def parse_url(self, url):
         """
@@ -28,7 +27,6 @@ class RasterTileManager:
 
     def tile_sphericalmercator_extent(self, zoom, tilex, tiley):
         xtiles_at_zoom, ytiles_at_zoom = self.tiles_per_dimension(zoom)
-
         if not (0 <= tilex <= xtiles_at_zoom):
             raise InvalidCoordinateForZoom("x({}) not less than expected xtiles_at_zoom({}) for zoom({})!".format(tilex, xtiles_at_zoom, zoom))
         if not (0 <= tiley <= ytiles_at_zoom):
@@ -47,25 +45,31 @@ class RasterTileManager:
         maxy = lowerleft_tile_cornery + meters_per_ytile_dimension
         return minx, miny, maxx, maxy
 
-    def meters_per_pixel(self, z):
-        row_tiles_at_zoom = self.number_of_tiles(z)
-        meters_per_tile_row = (self.spherical_mercator_xmax + abs(self.spherical_mercator_xmin))/row_tiles_at_zoom
-        result = meters_per_tile_row/self.tile_pixels_width
-        return result
-
-    def sphericalmercator_to_pixel(self, xm, ym):
+    def sphericalmercator_to_pixel(self, tile_url, xm, ym):
         """
-        Shift origin to raster/pixel space
+        Given a specific tile_url, shift origin to raster/pixel space
         Reproject from spherical-mercator to raster x/y values
         :param xm:
         :param ym:
         :return:
         """
+        layername, zoom, tilex, tiley, image_format = self.parse_url(tile_url)
+
         # get tile extents
-        tile_minx, tile_miny, tile_maxx, tile_maxy = self.tile_sphericalmercator_extent()
+        tile_minx, tile_miny, tile_maxx, tile_maxy = self.tile_sphericalmercator_extent(zoom, tilex, tiley)
 
         tile_meters_origin_shift_x = tile_maxx - tile_minx
         tile_meters_origin_shift_y = tile_maxy - tile_miny
+
+        # adjust xm & ym to max/min values, if they exceed the given tile
+        if xm > tile_maxx:
+            xm = tile_maxx
+        elif xm < tile_minx:
+            xm = tile_minx
+        if ym > tile_maxy:
+            ym = tile_maxy
+        elif ym < tile_miny:
+            ym = tile_miny
 
         # shift sphereical-mercator origin to zero start from lower-left
         # --> shifts so lower right is 0,0
@@ -85,9 +89,11 @@ class RasterTileManager:
 
     def tiles_per_dimension(self, zoom):
         tile_count = 2**zoom
+        # only support square tiles
+        assert self.tile_pixels_height == self.tile_pixels_width
         return tile_count, tile_count
 
-    def number_of_tiles(self, zoom):
+    def tiles_at_zoomlevel(self, zoom):
         return 2**(2*zoom)
 
 
