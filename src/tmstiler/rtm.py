@@ -1,7 +1,9 @@
 from urllib.parse import urlparse
 
+
 class InvalidCoordinateForZoom(Exception):
     pass
+
 
 class RasterTileManager:
 
@@ -27,18 +29,15 @@ class RasterTileManager:
     def tile_sphericalmercator_extent(self, zoom, tilex, tiley):
         xtiles_at_zoom, ytiles_at_zoom = self.tiles_per_dimension(zoom)
 
-        if not ( 0 <= tilex <= xtiles_at_zoom):
+        if not (0 <= tilex <= xtiles_at_zoom):
             raise InvalidCoordinateForZoom("x({}) not less than expected xtiles_at_zoom({}) for zoom({})!".format(tilex, xtiles_at_zoom, zoom))
-        if not ( 0 <= tiley <= ytiles_at_zoom):
+        if not (0 <= tiley <= ytiles_at_zoom):
             raise InvalidCoordinateForZoom("y({}) not less than expected ytiles_at_zoom({}) for zoom({})!".format(tiley, ytiles_at_zoom, zoom))
         # note this values are expected to be the same since tiles are squares
         meters_per_xtile_dimension = (self.spherical_mercator_xmax + abs(self.spherical_mercator_xmin))/xtiles_at_zoom
         meters_per_ytile_dimension = (self.spherical_mercator_ymax + abs(self.spherical_mercator_ymin))/ytiles_at_zoom
         assert meters_per_xtile_dimension == meters_per_ytile_dimension
 
-        # get negative tile indexes for zoom level
-        #xnegative_index_end = row_tiles_at_zoom/2
-        #ynegative_index_start = row_tiles_at_zoom/2
         lowerleft_tile_cornerx = (tilex * meters_per_xtile_dimension) - self.spherical_mercator_xmax
         lowerleft_tile_cornery = (tiley * meters_per_ytile_dimension) - self.spherical_mercator_ymax
 
