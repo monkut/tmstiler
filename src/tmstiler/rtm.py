@@ -45,7 +45,7 @@ class RasterTileManager:
         maxy = lowerleft_tile_cornery + meters_per_ytile_dimension
         return minx, miny, maxx, maxy
 
-    def sphericalmercator_to_pixel(self, tile_url, xm, ym):
+    def sphericalmercator_to_pixel(self, zoom, tilex, tiley, xm, ym):
         """
         Given a specific tile_url, shift origin to raster/pixel space
         Reproject from spherical-mercator to raster x/y values
@@ -53,8 +53,6 @@ class RasterTileManager:
         :param ym:
         :return:
         """
-        layername, zoom, tilex, tiley, image_format = self.parse_url(tile_url)
-
         # get tile extents
         tile_minx, tile_miny, tile_maxx, tile_maxy = self.tile_sphericalmercator_extent(zoom, tilex, tiley)
 

@@ -3,6 +3,7 @@
 DjangoRasterTileLayerManager for django specific raster implementations.
 Excepts that for each layer, a django model with a defined Point() field is given.
 """
+import mimetypes
 from .rtm import RasterTileManager
 
 from django.contrib.gis.geos import Polygon, Point
@@ -78,11 +79,12 @@ class DjangoRasterTileLayerManager(RasterTileManager):
 
         return Point(x, y, srid=point_object.srid)
 
-    def get_tile(self, layername, zoom, tilex, tiley, ignore_cached=False):
+    def get_tile(self, layername, zoom, tilex, tiley, extension=".png", ignore_cached=False):
         """
         :param zoom: Zoom Level
         :param tilex: tile x value (upper left starts at 0)
         :param tiley: tile y value (upper left starts at 0)
+        :param extension: image extension type
         :param ignore_cached: If True tile is re-rendered
         :return: (<mimetype>, <resulting tile image object>)
         """
@@ -129,4 +131,5 @@ class DjangoRasterTileLayerManager(RasterTileManager):
 
             # draw pixel on tile
             draw.polygon(pixel_poly_bbox.coords[0], fill=hslcolor_str)
-        return tile_image
+
+        return mimetypes.types_map.get(extension), tile_image
