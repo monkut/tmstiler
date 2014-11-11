@@ -1,4 +1,4 @@
 tmstiles
 ========
 
-map tile tools supporting python3
+map tile utilities supporting python3
