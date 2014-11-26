@@ -23,7 +23,7 @@ class RasterTileManager:
         result = urlparse(url)
         layername, z, x, ypart = result.path.rsplit("/", 4)[-4:]
         y, image_format = ypart.split(".")
-        return layername, z, x, y, image_format
+        return layername, int(z), int(x), int(y), image_format
 
     def tile_sphericalmercator_extent(self, zoom, tilex, tiley):
         xtiles_at_zoom, ytiles_at_zoom = self.tiles_per_dimension(zoom)
