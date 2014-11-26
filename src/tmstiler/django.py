@@ -19,7 +19,7 @@ class ObjectMissingExpectedMethod(Exception):
     pass
 
 class DjangoRasterTileLayerManager(RasterTileManager):
-    LEGEND_REQUIRED_METHODS = ("get_hsl_color", )
+    LEGEND_REQUIRED_METHODS = ("get_color_str", )
     VALID_POINT_POSITIONS = ("upperleft", "upperright", "lowerleft", "lowerright", "center")
     VALID_WMS_TYPES = ("TMS", )
     LAYER_CONFIG_REQUIRED_KEYS = ("pixel_size", "point_position", "model_queryset", "model_point_fieldname", "model_value_fieldname", "legend_instance")
@@ -34,7 +34,7 @@ class DjangoRasterTileLayerManager(RasterTileManager):
                                                 "model_queryset": <django model queryset object with model containing point & value fields>,
                                                 "model_point_fieldname": <point fieldname>,
                                                 "model_value_fieldname": <value fieldname>,
-                                                "legend_instance": <legend object instance with 'get_hsl_color()' method, used for defining pixel color>,
+                                                "legend_instance": <legend object instance with 'get_color_str()' method, used for defining pixel color>,
                                                  },
                                }
         """
@@ -106,7 +106,7 @@ class DjangoRasterTileLayerManager(RasterTileManager):
         kwargs = {"{}__within".format(layer_config["model_point_fieldname"]): buffered_bbox, }
         pixel_data = layer_config["model_queryset"].objects.filter(**kwargs)
         for pixel in pixel_data:
-            hslcolor_str = layer_config["legend_instance"].get_hsl_color(getattr(pixel, layer_config["model_value_fieldname"]))
+            color_str = layer_config["legend_instance"].get_color_str(getattr(pixel, layer_config["model_value_fieldname"]))
             model_point = getattr(pixel, layer_config["model_point_fieldname"])
             # pixel x, y expected to be in spherical-mercator
             # attempt to transform, note if srid is not defined this will generate an error
@@ -130,6 +130,6 @@ class DjangoRasterTileLayerManager(RasterTileManager):
             pixel_poly_bbox = Polygon.from_bbox((pxmin, pymin, pxmax, pymax))
 
             # draw pixel on tile
-            draw.polygon(pixel_poly_bbox.coords[0], fill=hslcolor_str)
+            draw.polygon(pixel_poly_bbox.coords[0], fill=color_str)
 
         return mimetypes.types_map.get(extension), tile_image
