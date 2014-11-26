@@ -104,7 +104,7 @@ class DjangoRasterTileLayerManager(RasterTileManager):
 
         # get & process pixel data in attached model
         kwargs = {"{}__within".format(layer_config["model_point_fieldname"]): buffered_bbox, }
-        pixel_data = layer_config["model_queryset"].objects.filter(**kwargs)
+        pixel_data = layer_config["model_queryset"].filter(**kwargs)
         for pixel in pixel_data:
             color_str = layer_config["legend_instance"].get_color_str(getattr(pixel, layer_config["model_value_fieldname"]))
             model_point = getattr(pixel, layer_config["model_point_fieldname"])
