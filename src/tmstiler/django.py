@@ -43,8 +43,8 @@ class DjangoRasterTileLayerManager(RasterTileManager):
             if not all(required_config in config_values for required_config in self.LAYER_CONFIG_REQUIRED_KEYS):
                 raise RequiredConfigMissing("Given layer config missing required values! Expected values: {}".format(self.LAYER_CONFIG_REQUIRED_KEYS))
             assert config_values["point_position"] in self.VALID_POINT_POSITIONS
-            if not all(callable(getattr(config_values["legend"], m)) for m in self.LEGEND_REQUIRED_METHODS):
-                raise ObjectMissingExpectedMethod("given 'legend' object does not have a defined '{}' method!".format(self.LEGEND_REQUIRED_METHODS))
+            if not all(callable(getattr(config_values["legend_instance"], m)) for m in self.LEGEND_REQUIRED_METHODS):
+                raise ObjectMissingExpectedMethod("given 'legend_instance' object does not have a defined '{}' method!".format(self.LEGEND_REQUIRED_METHODS))
 
             # set optional defaults
             for config_fieldname, config_default in self.LAYER_CONFIG_DEFAULTS.items():
