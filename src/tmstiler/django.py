@@ -29,7 +29,7 @@ class DjangoRasterTileLayerManager(RasterTileManager):
     def __init__(self, layers_config):
         """
         :param layers_config: { <layer name>: {
-                                                "pixel_size":<pixel area size in meters>,
+                                                "pixel_size":<pixel area size in meters>, # this is the raster pixel or bin size in meters
                                                 "point_position":<pixel position represented by model point>,
                                                 "model_queryset": <django model queryset object with model containing point & value fields>,
                                                 "model_point_fieldname": <point fieldname>,
@@ -95,7 +95,7 @@ class DjangoRasterTileLayerManager(RasterTileManager):
         tile_xmin, tile_ymin, tile_xmax, tile_ymax = self.tile_sphericalmercator_extent(zoom, tilex, tiley)
         tile_bbox = Polygon.from_bbox((tile_xmin, tile_ymin, tile_xmax, tile_ymax))
         tile_bbox.srid = SPHERICAL_MERCATOR_SRID
-        # expand tile_bbox by 1/2 pixel to assure edge data is included
+        # expand tile_bbox by 1/2 pixel(bin_size) to assure edge data is included
         buffered_bbox = tile_bbox.buffer(layer_config["pixel_size"]/2, quadsegs=2)
 
         # start drawing each block
