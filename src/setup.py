@@ -3,7 +3,7 @@
 from distutils.core import setup
 
 setup(name='tmstiler',
-      version='0.1',
+      version='0.2',
       description='Utilities for Creating TMS tiles',
       author='Shane Cousins',
       author_email='shane.cousins@gmail.com',
