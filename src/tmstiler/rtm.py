@@ -82,6 +82,9 @@ class RasterTileManager:
         yp = (shifted_ym * 256) / shifted_ymax
         # invert y (for raster space)
         yp = self.tile_pixels_height - yp
+        # make sure pixels are in the expected range.
+        assert 0 <= xp <= 256
+        assert 0 <= yp <= 256
 
         return xp, yp
 
