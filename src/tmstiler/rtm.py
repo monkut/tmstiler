@@ -51,13 +51,15 @@ class RasterTileManager:
         Reproject from spherical-mercator to raster x/y values
         :param xm:
         :param ym:
-        :return:
+        :return: xp, yp (x, y pixel coordinates)
         """
         # get tile extents
         tile_minx, tile_miny, tile_maxx, tile_maxy = self.tile_sphericalmercator_extent(zoom, tilex, tiley)
 
-        tile_meters_origin_shift_x = tile_maxx - tile_minx
-        tile_meters_origin_shift_y = tile_maxy - tile_miny
+        tile_meters_x_width = tile_maxx - tile_minx
+        tile_meters_y_height = tile_maxy - tile_miny
+        meters_per_xpixel = tile_meters_x_width/256
+        meters_per_ypixel = tile_meters_y_height/256
 
         # adjust xm & ym to max/min values, if they exceed the given tile
         if xm > tile_maxx:
@@ -72,21 +74,20 @@ class RasterTileManager:
         # shift sphereical-mercator origin to zero start from lower-left
         # --> shifts so lower right is 0,0
         # --> NOTE: value still in meters
-        shifted_xm = xm - tile_meters_origin_shift_x
-        shifted_ym = ym - tile_meters_origin_shift_y
-        shifted_ymax = tile_maxy - tile_meters_origin_shift_y
-        shifted_xmax = tile_maxx - tile_meters_origin_shift_x
+        shifted_xm = xm - tile_minx
+        shifted_ym = ym - tile_miny
+        # invert y (for raster space)
+        inverted_ym = shifted_ym - tile_meters_y_height
 
         # convert from meters (0 - shifted_max) to pixels (0 - 256)
-        xp = (shifted_xm * 256) / shifted_xmax
-        yp = (shifted_ym * 256) / shifted_ymax
-        # invert y (for raster space)
-        yp = self.tile_pixels_height - yp
+        xp = shifted_xm / meters_per_xpixel
+        yp = abs(inverted_ym / meters_per_ypixel)
+
         # make sure pixels are in the expected range.
         assert 0 <= xp <= 256
         assert 0 <= yp <= 256
 
-        return xp, yp
+        return int(xp), int(yp)
 
     def tiles_per_dimension(self, zoom):
         tile_count = 2**zoom
