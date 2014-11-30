@@ -51,10 +51,10 @@ class SafecastMeasurementsTileView(View):
 
     def get(self, request):
         layername, zoom, x, y, image_format = self.tilemgr.parse_url(request.path)
-        logger.info("layername({}) zoom({}) x({}) y({}) image_format({})".format(layername, zoom, x, y, image_format))
         mimetype, tile_pil_img_object = self.tilemgr.get_tile(layername, zoom, x, y)
-        image_encoding = image_format.replace(".", "")
-        image_fileio = BytesIO()
+        image_encoding = image_format.replace(".", "")  # change ".png" to just "png"
+        # pillow img.tobytes() doesn't seem to work, workaround to serve raw bytes via BytesIO()
+        image_fileio = BytesIO()  
         tile_pil_img_object.save(image_fileio, image_encoding)
         image_fileio.seek(0)
         return HttpResponse(image_fileio, content_type=mimetype)
