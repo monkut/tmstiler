@@ -3,23 +3,21 @@ tmstiles
 
 Map tile utilities supporting python3.
 
-Previosly, in a number of projectsI had used a Modest Maps & TileStache to produce spatially aggragated data (geo bin) overlays for OSM with leafletjs.
+Previosly, in a number of projects I had used Modest Maps & TileStache to produce spatially aggragated data (geo bin) overlays for OSM with leafletjs.
 However, in attempting to move more work over to python3, I soon discovered that these libraries do not (yet?) support python3.  For the spatially aggragated data (geo bin),
-use case it appeared that it wasn't too much work, so this project was started to allow tile creation functionality.
+use case it appeared that it wasn't too much work, so this project was started to support the use-case for tile creation.  It mimics TileStache in the interface to some degree, but leaves cacheing to higher levels.
 
 This project contains two classes which are intended for Map Tile generation, 'RasterTileManager' and 'DjangoRasterTileLayerManager'.
 'DjangoRasterTileLayerManager' assumes you have data already *binned* and placed in django model.
 
 
 
-Refer to https://github.com/monkut/safecasttiles for a sample implmentation of the 'DjangoRasterTileLayerManager' class.
+Below is an excerpt of the https://github.com/monkut/safecasttiles project showing how the 'DjangoRasterTileLayerManager' class can be added in django for tile creation.
+
+NOTE:  'DjangoRasterTileLayerManager' requires pillow and django.  ('RasterTileManager' alone has no additional dependencies)
 
 
 ```
-import json
-import logging
-from collections import OrderedDict
-from urllib.parse import urljoin
 from io import BytesIO
 
 from django.http import HttpResponse
@@ -28,40 +26,6 @@ from django.views.generic import View
 from tmstiler.django import DjangoRasterTileLayerManager
 
 from .models import Measurement
-
-SAFECAST_TILELAYER_PREFIX = "/tiles/"  # needs to match urls.py
-
-# Get an instance of a logger
-logger = logging.getLogger(__name__)
-
-
-class Legend:
-
-    def get_color_str(self, value):
-        """
-        :param value:
-        :return:  rgb or hsl color string in the format:
-
-        rgb(255,0,0)
-        rgb(100%,0%,0%)
-
-        hsl(hue, saturation%, lightness%)
-        where:
-            hue is the color given as an angle between 0 and 360 (red=0, green=120, blue=240)
-            saturation is a value between 0% and 100% (gray=0%, full color=100%)
-            lightness is a value between 0% and 100% (black=0%, normal=50%, white=100%).
-
-        For example, hsl(0,100%,50%) is pure red.
-        """
-        max_value = 3.99
-        min_value = 0.03
-        full_range = max_value - min_value
-        max_h = 61
-        min_h = 246
-        color_range = min_h - max_h
-        value_percentage = (value - min_value)/full_range
-        h = int(color_range - (value_percentage * color_range))
-        return "hsl({}, 100%, 50%)".format(h)
 
 
 class SafecastMeasurementsTileView(View):
