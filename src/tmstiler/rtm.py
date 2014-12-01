@@ -17,6 +17,7 @@ class RasterTileManager:
 
     def parse_url(self, url):
         """
+        Parse out the layername, zoom, x, y and image file format from given URL.
         :param url: url of map server in format: 'http://www.someserver.com/partofurl/layername/zoom/x/y.png'
         :return: layername, x, y, z, tile image format (png/jpg)
         """
@@ -26,12 +27,19 @@ class RasterTileManager:
         return layername, int(z), int(x), int(y), image_format
 
     def tile_sphericalmercator_extent(self, zoom, tilex, tiley):
+        """
+        Calculate the given tile's Spherical Mercator extent
+        :param zoom: zoom level
+        :param tilex: TMS tile X
+        :param tiley: TMS tile Y
+        :return: Tile's Spherical Mercator extent (minx, miny, maxx, maxy)
+        """
         xtiles_at_zoom, ytiles_at_zoom = self.tiles_per_dimension(zoom)
         if not (0 <= tilex <= xtiles_at_zoom):
             raise InvalidCoordinateForZoom("x({}) not less than expected xtiles_at_zoom({}) for zoom({})!".format(tilex, xtiles_at_zoom, zoom))
         if not (0 <= tiley <= ytiles_at_zoom):
             raise InvalidCoordinateForZoom("y({}) not less than expected ytiles_at_zoom({}) for zoom({})!".format(tiley, ytiles_at_zoom, zoom))
-        # note this values are expected to be the same since tiles are squares
+        # note these values are expected to be the same since tiles are squares
         meters_per_xtile_dimension = (self.spherical_mercator_xmax + abs(self.spherical_mercator_xmin))/xtiles_at_zoom
         meters_per_ytile_dimension = (self.spherical_mercator_ymax + abs(self.spherical_mercator_ymin))/ytiles_at_zoom
         assert meters_per_xtile_dimension == meters_per_ytile_dimension
@@ -47,11 +55,14 @@ class RasterTileManager:
 
     def sphericalmercator_to_pixel(self, zoom, tilex, tiley, xm, ym):
         """
-        Given a specific tile_url, shift origin to raster/pixel space
-        Reproject from spherical-mercator to raster x/y values
-        :param xm:
-        :param ym:
-        :return: xp, yp (x, y pixel coordinates)
+        Given a specific zoom & tile location,
+        Reproject spherical-mercator value to raster x/y pixel values
+        :param zoom: zoom level
+        :param tilex: TMS tile X
+        :param tiley: TMS tile Y
+        :param xm: X in Spherical Mercator (meters)
+        :param ym: Y in Spherical Mercator (meters)
+        :return: xp, yp (x, y raster pixel coordinates)
         """
         # get tile extents
         tile_minx, tile_miny, tile_maxx, tile_maxy = self.tile_sphericalmercator_extent(zoom, tilex, tiley)
@@ -90,13 +101,16 @@ class RasterTileManager:
         return int(xp), int(yp)
 
     def tiles_per_dimension(self, zoom):
+        """
+        Refer to http://wiki.openstreetmap.org/wiki/Slippy_map_tilenames for details
+        :param zoom: Zoom level to calcluate row/column numbers for
+        :return: number of tile columns(x), rows(y) at zoom level
+        """
         tile_count = 2**zoom
         # only support square tiles
         assert self.tile_pixels_height == self.tile_pixels_width
         return tile_count, tile_count
 
-    def tiles_at_zoomlevel(self, zoom):
-        return 2**(2*zoom)
 
 
 
