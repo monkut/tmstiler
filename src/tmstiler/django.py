@@ -95,8 +95,8 @@ class DjangoRasterTileLayerManager(RasterTileManager):
         tile_xmin, tile_ymin, tile_xmax, tile_ymax = self.tile_sphericalmercator_extent(zoom, tilex, tiley)
         tile_bbox = Polygon.from_bbox((tile_xmin, tile_ymin, tile_xmax, tile_ymax))
         tile_bbox.srid = SPHERICAL_MERCATOR_SRID
-        # expand tile_bbox by 1/2 pixel(bin_size) to assure edge data is included
-        buffered_bbox = tile_bbox.buffer(layer_config["pixel_size"]/2, quadsegs=2)
+        # expand tile_bbox by 1 pixel(bin_size) to assure edge data is included
+        buffered_bbox = tile_bbox.buffer(layer_config["pixel_size"], quadsegs=2)
 
         # start drawing each block
         tile_image = Image.new("RGBA", (self.tile_pixels_width, self.tile_pixels_height), (255,255,255, 0))
