@@ -17,7 +17,7 @@ Below is an excerpt of the https://github.com/monkut/safecasttiles project showi
 NOTE:  'DjangoRasterTileLayerManager' requires pillow and django.  ('RasterTileManager' alone has no additional dependencies)
 
 
-```
+```python
 from io import BytesIO
 
 from django.http import HttpResponse
