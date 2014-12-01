@@ -1,4 +1,4 @@
-tmstiles
+tmstiler
 ========
 
 Map tile utilities supporting python3.
@@ -60,4 +60,16 @@ class SafecastMeasurementsTileView(View):
         return HttpResponse(image_fileio, content_type=mimetype)
 ```
 
+##Dependencies
+
+###Required:
+
+- None
+
+###Optional:
+
+The following libraries are needed to make use of the 'DjangoRasterTileLayerManager()' class, for generating custom geo binned data from django Models containing a PointField(). (Currently only square bins are supported, but it should be pretty trival to support Polygon objects)
+
+- django: [geodjango] https://www.djangoproject.com/download/ (optional)
+- pillow: https://github.com/python-pillow/Pillow (optional)
 
