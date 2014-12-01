@@ -64,6 +64,8 @@ class SafecastMeasurementsTileView(View):
 
 ###Required:
 
+The 'RasterTileManager()' class uses the builtin python3 libraries.  It contains the basic methods needed for performing the calculations necessary for building individual TMS map tiles.  (To create the actual tile image files, pillow (PIL) is required, see below.)
+
 - None
 
 ###Optional:
