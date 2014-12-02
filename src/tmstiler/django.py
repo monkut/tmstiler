@@ -20,13 +20,10 @@ class ObjectMissingExpectedMethod(Exception):
 
 class ReferenceLegend:
 
-    def get_color_str(self, model_instance, model_value_fieldname):
-        # 1. get model value for legend color calculation
-        value = getattr(model_instance, model_value_fieldname)
+    def get_color_str(self, model_instance, value):
+        # 1. calculate the color for the given value
 
-        # 2. calculate the color for the given value
-
-        # 3. return either hsl() or rgb() string
+        # 2.. return either hsl() or rgb() string
         return "hsl(0,100%,50%)"  # pure red
 
 
@@ -118,7 +115,7 @@ class DjangoRasterTileLayerManager(RasterTileManager):
         kwargs = {"{}__within".format(layer_config["model_point_fieldname"]): buffered_bbox, }
         pixel_data = layer_config["model_queryset"].filter(**kwargs)
         for pixel in pixel_data:
-            color_str = layer_config["legend_instance"].get_color_str(pixel, layer_config["model_value_fieldname"])
+            color_str = layer_config["legend_instance"].get_color_str(pixel, getattr(pixel, layer_config["model_value_fieldname"]))
             model_point = getattr(pixel, layer_config["model_point_fieldname"])
             # pixel x, y expected to be in spherical-mercator
             # attempt to transform, note if srid is not defined this will generate an error
