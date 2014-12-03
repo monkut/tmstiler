@@ -20,10 +20,12 @@ class ObjectMissingExpectedMethod(Exception):
 
 class ReferenceLegend:
 
-    def get_color_str(self, model_instance, value):
-        # 1. calculate the color for the given value
+    def get_color_str(self, model_instance):
+        # 1. calculate the color from the given model instance fields
 
-        # 2.. return either hsl() or rgb() string
+        # 2. return a PIL supported color string.
+        #    Refer to the link below for accepted color strings:
+        #    http://pillow.readthedocs.org/en/latest/reference/ImageColor.html?highlight=hsl#color-names
         return "hsl(0,100%,50%)"  # pure red
 
 
@@ -113,10 +115,10 @@ class DjangoRasterTileLayerManager(RasterTileManager):
 
         # get & process pixel data in attached model
         kwargs = {"{}__within".format(layer_config["model_point_fieldname"]): buffered_bbox, }
-        pixel_data = layer_config["model_queryset"].filter(**kwargs)
-        for pixel in pixel_data:
-            color_str = layer_config["legend_instance"].get_color_str(pixel, getattr(pixel, layer_config["model_value_fieldname"]))
-            model_point = getattr(pixel, layer_config["model_point_fieldname"])
+        model_instance_pixel_data = layer_config["model_queryset"].filter(**kwargs)
+        for model_instance in model_instance_pixel_data:
+            color_str = layer_config["legend_instance"].get_color_str(model_instance)
+            model_point = getattr(model_instance, layer_config["model_point_fieldname"])
             # pixel x, y expected to be in spherical-mercator
             # attempt to transform, note if srid is not defined this will generate an error
             if model_point.srid != SPHERICAL_MERCATOR_SRID:
