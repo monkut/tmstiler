@@ -98,7 +98,6 @@ class DjangoRasterTileLayerManager(RasterTileManager):
         :param tilex: tile x value (upper left starts at 0)
         :param tiley: tile y value (upper left starts at 0)
         :param extension: image extension type
-        :param ignore_cached: If True tile is re-rendered
         :return: (<mimetype>, <resulting tile image object>)
         """
         layer_config = self.layers_config[layername]
