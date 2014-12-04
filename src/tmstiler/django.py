@@ -92,7 +92,7 @@ class DjangoRasterTileLayerManager(RasterTileManager):
 
         return Point(x, y, srid=point_object.srid)
 
-    def get_tile(self, layername, zoom, tilex, tiley, extension=".png", ignore_cached=False):
+    def get_tile(self, layername, zoom, tilex, tiley, extension=".png"):
         """
         :param zoom: Zoom Level
         :param tilex: tile x value (upper left starts at 0)
