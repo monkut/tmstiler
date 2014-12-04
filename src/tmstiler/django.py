@@ -138,7 +138,7 @@ class DjangoRasterTileLayerManager(RasterTileManager):
             poly_coords = []
             for sm_x, sm_y in sphericalmercator_poly.coords[0]:
                 px, py = self.sphericalmercator_to_pixel(zoom, tilex, tiley, sm_x, sm_y)
-                poly_coords.append(px, py)
+                poly_coords.append((px, py))
 
             # draw pixel on tile
             draw.polygon(poly_coords, fill=color_str)
