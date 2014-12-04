@@ -135,6 +135,11 @@ class DjangoRasterTileLayerManager(RasterTileManager):
                                       upperleft_point.y)
             # transform pixel spherical-mercator coords to image pixel coords
             sphericalmercator_poly = Polygon.from_bbox(sphericalmercator_bbox)
+            if layer_config["rounded_pixels"]:
+                buffer_size = layer_config["pixel_size"] / 3.0
+                minus_buffer_poly = sphericalmercator_poly.buffer(-buffer_size, quadsegs=1)
+                sphericalmercator_poly = minus_buffer_poly.buffer(buffer_size)
+
             poly_coords = []
             for sm_x, sm_y in sphericalmercator_poly.coords[0]:
                 px, py = self.sphericalmercator_to_pixel(zoom, tilex, tiley, sm_x, sm_y)
