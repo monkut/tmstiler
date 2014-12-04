@@ -35,7 +35,7 @@ class DjangoRasterTileLayerManager(RasterTileManager):
     VALID_WMS_TYPES = ("TMS", )
     LAYER_CONFIG_REQUIRED_KEYS = ("pixel_size", "point_position", "model_queryset", "model_point_fieldname", "model_value_fieldname", "legend_instance")
     LAYER_CONFIG_DEFAULTS = {"model_value_fieldname": "value",
-                             "rounded_pixels": False,
+                             "round_pixels": False,
                              "wms_type": "TMS"}
 
     def __init__(self, layers_config):
@@ -46,7 +46,7 @@ class DjangoRasterTileLayerManager(RasterTileManager):
                                                 "model_queryset": <django model queryset object with model containing point & value fields>,
                                                 "model_point_fieldname": <point fieldname>,
                                                 "model_value_fieldname": <value fieldname>,
-                                                "rounded_pixels": False,
+                                                "round_pixels": False,
                                                 "legend_instance": <legend object instance with 'get_color_str()' method, used for defining pixel color>,
                                                  },
                                }
@@ -135,10 +135,9 @@ class DjangoRasterTileLayerManager(RasterTileManager):
                                       upperleft_point.y)
             # transform pixel spherical-mercator coords to image pixel coords
             sphericalmercator_poly = Polygon.from_bbox(sphericalmercator_bbox)
-            if layer_config["rounded_pixels"]:
-                buffer_size = layer_config["pixel_size"] / 3.0
-                minus_buffer_poly = sphericalmercator_poly.buffer(-buffer_size, quadsegs=1)
-                sphericalmercator_poly = minus_buffer_poly.buffer(buffer_size)
+            if layer_config["round_pixels"]:
+                buffer_size = layer_config["pixel_size"] / 2.0
+                sphericalmercator_poly = sphericalmercator_poly.centroid.buffer(buffer_size)
 
             poly_coords = []
             for sm_x, sm_y in sphericalmercator_poly.coords[0]:
