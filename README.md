@@ -11,6 +11,9 @@ use case, it appeared that it wasn't too much work, so this project was started 
 This project contains two classes which are intended for Map Tile generation, 'RasterTileManager' and 'DjangoRasterTileLayerManager'.
 'DjangoRasterTileLayerManager' assumes you have data already *binned* and placed in a django model containing a _PointField_.
 
+Sample image created with tiles rendered using the 'DjangoRasterTileLayerManager' from the [safecasttiles](https://github.com/monkut/safecasttiles) project:
+
+![Safecast Data 2014-10](https://lh5.googleusercontent.com/8Uj8wENmgpN0s59mmbKqwced4z2WaxcFGK-fRp3kXas=s259-p-no)
 
 Below is an excerpt of the https://github.com/monkut/safecasttiles project showing how the 'DjangoRasterTileLayerManager' class can be added in django for tile creation.
 
