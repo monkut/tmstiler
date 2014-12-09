@@ -15,7 +15,7 @@ Sample image created with tiles rendered using the 'DjangoRasterTileLayerManager
 
 ![Safecast Data 2014-10](https://lh5.googleusercontent.com/8Uj8wENmgpN0s59mmbKqwced4z2WaxcFGK-fRp3kXas=s259-p-no)
 
-Below is an excerpt of the https://github.com/monkut/safecasttiles project showing how the 'DjangoRasterTileLayerManager' class can be added in django for tile creation.
+Below is an excerpt of the [safecasttiles](https://github.com/monkut/safecasttiles) showing how the 'DjangoRasterTileLayerManager' class can be added in django for tile creation.
 
 NOTE:  'DjangoRasterTileLayerManager' requires pillow and django.  ('RasterTileManager' alone has no additional dependencies)
 
