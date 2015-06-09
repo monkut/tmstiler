@@ -8,11 +8,14 @@ In a number of projects I used Modest Maps & TileStache to produce spatially agg
 However, in attempting to move more work over to python3, I soon discovered that these libraries do not (yet?) support python3.  For the spatially aggragated data (geo bin)
 use case, it appeared that it wasn't too much work, so this project was started to support the use-case for tile creation in python3 (_and the project serves as a personal study of tile maps_).  It mimics TileStache in the interface to some degree, but leaves cacheing to higher levels.
 
-This project contains two classes which are intended for Map Tile generation, 'RasterTileManager' and 'DjangoRasterTileLayerManager'.
-'DjangoRasterTileLayerManager' assumes you have data already *binned* and placed in a django model containing a _PointField_.
+This project contains two classes which are intended for Map Tile generation, 'RasterTileManager' and 'DjangoRasterTileLayerManager'.  'RasterTileManager' provides helper methods.  For transforming spherical mercator (google maps) projected points to tile pixel locations the '.sphericalmercator_to_pixel(zoom, tilex, tiley, xm, ym)' method is available.
+'DjangoRasterTileLayerManager' assumes you have data already *binned* and placed in a django model containing a _PointField_, and can be used to create binned tile overlay images from your django models.
 
+Sample image created with tiles rendered using the tmstiler's 'DjangoRasterTileLayerManager' in the [safecasttiles](https://github.com/monkut/safecasttiles) project:
 
-Below is an excerpt of the https://github.com/monkut/safecasttiles project showing how the 'DjangoRasterTileLayerManager' class can be added in django for tile creation.
+![Safecast Data 2014-10](https://lh5.googleusercontent.com/8Uj8wENmgpN0s59mmbKqwced4z2WaxcFGK-fRp3kXas=s259-p-no)
+
+Below is an excerpt of the [safecasttiles](https://github.com/monkut/safecasttiles) showing how the 'DjangoRasterTileLayerManager' class can be added in django for tile creation.
 
 NOTE:  'DjangoRasterTileLayerManager' requires pillow and django.  ('RasterTileManager' alone has no additional dependencies)
 
