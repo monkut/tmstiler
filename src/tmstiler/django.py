@@ -119,7 +119,7 @@ class DjangoRasterTileLayerManager(RasterTileManager):
         kwargs = {"{}__within".format(layer_config["model_point_fieldname"]): buffered_bbox, }
         model_instance_pixel_data = layer_config["model_queryset"].filter(**kwargs)
         for model_instance in model_instance_pixel_data:
-            color_str = layer_config["legend_instance"].get_color_str(model_instance)
+            color_str = layer_config["legend_instance"].get_color_str(model_instance, model_value_fieldname=layer_config["model_value_fieldname"])
             model_point = getattr(model_instance, layer_config["model_point_fieldname"])
             # pixel x, y expected to be in spherical-mercator
             # attempt to transform, note if srid is not defined this will generate an error
