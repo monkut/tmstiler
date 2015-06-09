@@ -20,8 +20,9 @@ class ObjectMissingExpectedMethod(Exception):
 
 class ReferenceLegend:
 
-    def get_color_str(self, model_instance):
+    def get_color_str(self, model_instance, **kwargs):
         # 1. calculate the color from the given model instance fields
+
 
         # 2. return a PIL supported color string.
         #    Refer to the link below for accepted color strings:
