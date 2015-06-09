@@ -15,6 +15,9 @@ SPHERICAL_MERCATOR_SRID = 3857 # google maps projection
 class RequiredConfigMissing(Exception):
     pass
 
+class LayerNotConfigured(Exception):
+    pass
+
 class ObjectMissingExpectedMethod(Exception):
     pass
 
@@ -101,7 +104,9 @@ class DjangoRasterTileLayerManager(RasterTileManager):
         :param extension: image extension type
         :return: (<mimetype>, <resulting tile image object>)
         """
-        layer_config = self.layers_config[layername]
+        layer_config = self.layers_config.get(layername, None)
+        if not layer_config:
+            raise LayerNotConfigured("layers_config[{}] not found in: {}".format(layername, str(self.layers_config.keys())))
 
         # get tile extents in SPHERICAL_MERCATOR_SRID
         # (xmin, ymin, xmax, ymax)
