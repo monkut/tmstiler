@@ -4,9 +4,9 @@ tmstiler
 Map tile utilities supporting python3.
 
 In a number of projects I used Modest Maps & TileStache to produce spatially aggragated data (geo bin) overlays for OSM with leafletjs.
+At the start of this project these libraries did not yet support python-3
 
-However, in attempting to move more work over to python3, I soon discovered that these libraries do not (yet?) support python3.  For the spatially aggragated data (geo bin)
-use case, it appeared that it wasn't too much work, so this project was started to support the use-case for tile creation in python3 (_and the project serves as a personal study of tile maps_).  It mimics TileStache in the interface to some degree, but leaves cacheing to higher levels.
+This project was started to support the use-case for tile creation in python-3 (_and the project serves as a personal study of tile maps_).  It mimics TileStache in the interface to some degree, but leaves cacheing to higher levels.
 
 This project contains two classes which are intended for Map Tile generation, 'RasterTileManager' and 'DjangoRasterTileLayerManager'.  'RasterTileManager' provides helper methods.  For transforming spherical mercator (google maps) projected points to tile pixel locations the '.sphericalmercator_to_pixel(zoom, tilex, tiley, xm, ym)' method is available.
 'DjangoRasterTileLayerManager' assumes you have data already *binned* and placed in a django model containing a _PointField_, and can be used to create binned tile overlay images from your django models.

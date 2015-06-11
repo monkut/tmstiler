@@ -4,10 +4,11 @@ DjangoRasterTileLayerManager for django specific raster implementations.
 Excepts that for each layer, a django model with a defined Point() field is given.
 """
 import mimetypes
-from .rtm import RasterTileManager
 
 from django.contrib.gis.geos import Polygon, Point
 from PIL import Image, ImageDraw
+
+from .tmstiler.rtm import RasterTileManager
 
 
 SPHERICAL_MERCATOR_SRID = 3857 # google maps projection
