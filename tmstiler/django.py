@@ -8,7 +8,7 @@ import mimetypes
 from django.contrib.gis.geos import Polygon, Point
 from PIL import Image, ImageDraw
 
-from .tmstiler.rtm import RasterTileManager
+from .rtm import RasterTileManager
 
 
 SPHERICAL_MERCATOR_SRID = 3857 # google maps projection
