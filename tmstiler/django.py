@@ -11,23 +11,26 @@ from PIL import Image, ImageDraw
 from .rtm import RasterTileManager
 
 
-SPHERICAL_MERCATOR_SRID = 3857 # google maps projection
+SPHERICAL_MERCATOR_SRID = 3857  # google maps projection
+
 
 class RequiredConfigMissing(Exception):
     pass
 
+
 class LayerNotConfigured(Exception):
     pass
+
 
 class ObjectMissingExpectedMethod(Exception):
     pass
 
+
 class ReferenceLegend:
 
     def get_color_str(self, model_instance, **kwargs):
+        # TODO: Complete for proper color calculation based on model_instance value!
         # 1. calculate the color from the given model instance fields
-
-
         # 2. return a PIL supported color string.
         #    Refer to the link below for accepted color strings:
         #    http://pillow.readthedocs.org/en/latest/reference/ImageColor.html?highlight=hsl#color-names
@@ -36,39 +39,50 @@ class ReferenceLegend:
 
 class DjangoRasterTileLayerManager(RasterTileManager):
     LEGEND_REQUIRED_METHODS = ("get_color_str", )
-    VALID_POINT_POSITIONS = ("upperleft", "upperright", "lowerleft", "lowerright", "center")
+    VALID_POINT_POSITIONS = ("upperleft",
+                             "upperright",
+                             "lowerleft",
+                             "lowerright",
+                             "center")
     VALID_WMS_TYPES = ("TMS", )
-    LAYER_CONFIG_REQUIRED_KEYS = ("pixel_size", "point_position", "model_queryset", "model_point_fieldname", "model_value_fieldname", "legend_instance")
+    LAYER_CONFIG_REQUIRED_KEYS = ("pixel_size",
+                                  "point_position",
+                                  "model_queryset",
+                                  "model_point_fieldname",
+                                  "model_value_fieldname",
+                                  "legend_instance")
     LAYER_CONFIG_DEFAULTS = {"model_value_fieldname": "value",
                              "round_pixels": False,
                              "wms_type": "TMS"}
 
     def __init__(self, layers_config):
         """
-        :param layers_config: { <layer name>: {
-                                                "pixel_size":<pixel area size in meters>, # this is the raster pixel or bin size in meters
-                                                "point_position":<pixel position represented by model point>,
-                                                "model_queryset": <django model queryset object with model containing point & value fields>,
-                                                "model_point_fieldname": <point fieldname>,
-                                                "model_value_fieldname": <value fieldname>,
-                                                "round_pixels": False,
-                                                "legend_instance": <legend object instance with 'get_color_str()' method, used for defining pixel color>,
-                                                 },
-                               }
+        :param layers_config:
+            { <layer name>: {
+                "pixel_size":<pixel area size in meters>, # this is the raster pixel or bin size in meters
+                "point_position":<pixel position represented by model point>,
+                "model_queryset": <django model queryset object with model containing point & value fields>,
+                "model_point_fieldname": <point fieldname>,
+                "model_value_fieldname": <value fieldname>,
+                "round_pixels": False,
+                "legend_instance": <legend object instance with 'get_color_str()' method, for pixel color calculation>,
+                 },
+           }
         """
         # check incoming layer config values
         for layer_name, config_values in layers_config.items():
             if not all(required_config in config_values for required_config in self.LAYER_CONFIG_REQUIRED_KEYS):
-                raise RequiredConfigMissing("Given layer config missing required values! Expected values: {}".format(self.LAYER_CONFIG_REQUIRED_KEYS))
+                msg = "Given layer config missing required values! Expected values: {}".format(self.LAYER_CONFIG_REQUIRED_KEYS)
+                raise RequiredConfigMissing(msg)
             assert config_values["point_position"] in self.VALID_POINT_POSITIONS
             if not all(callable(getattr(config_values["legend_instance"], m)) for m in self.LEGEND_REQUIRED_METHODS):
-                raise ObjectMissingExpectedMethod("given 'legend_instance' object does not have a defined '{}' method!".format(self.LEGEND_REQUIRED_METHODS))
+                msg = "given 'legend_instance' object does not have a defined '{}' method!".format(self.LEGEND_REQUIRED_METHODS)
+                raise ObjectMissingExpectedMethod(msg)
 
             # set optional defaults
             for config_fieldname, config_default in self.LAYER_CONFIG_DEFAULTS.items():
                 if config_fieldname not in config_values:
                     config_values[config_fieldname] = config_default
-
         self.layers_config = layers_config
 
         # initialize base-class variables
@@ -76,9 +90,11 @@ class DjangoRasterTileLayerManager(RasterTileManager):
 
     def _adjust_point_to_upperleft(self, layername, point_object):
         """
-        Adjust point so that it represents the upper-left coord
-        :param point_object:
-        :return:
+        Adjust point so that it represents the upper-left coord for defined pixel size
+        :param layername: Defined in layers_config on initial instantiation.
+            needed to retrieve 'point_position' and 'pixel_size' for layer
+        :param point_object: Django Point Object to be adjusted
+        :return: Adjusted Point Object
         """
         layer_config = self.layers_config[layername]
         point_position = layer_config["point_position"]
@@ -99,6 +115,7 @@ class DjangoRasterTileLayerManager(RasterTileManager):
 
     def get_tile(self, layername, zoom, tilex, tiley, extension=".png"):
         """
+        :param layername: Needed to retrieve layer specific configuration
         :param zoom: Zoom Level
         :param tilex: tile x value (upper left starts at 0)
         :param tiley: tile y value (upper left starts at 0)
@@ -118,14 +135,21 @@ class DjangoRasterTileLayerManager(RasterTileManager):
         buffered_bbox = tile_bbox.buffer(layer_config["pixel_size"], quadsegs=2)
 
         # start drawing each block
-        tile_image = Image.new("RGBA", (self.tile_pixels_width, self.tile_pixels_height), (255,255,255, 0))
+        tile_image = Image.new("RGBA",
+                               (self.tile_pixels_width, self.tile_pixels_height),
+                               (255, 255, 255, 0))
         draw = ImageDraw.Draw(tile_image)
+
+        # get layer legend instance
+        legend = layer_config["legend_instance"]
 
         # get & process pixel data in attached model
         kwargs = {"{}__within".format(layer_config["model_point_fieldname"]): buffered_bbox, }
-        model_instance_pixel_data = layer_config["model_queryset"].filter(**kwargs)
+        queryset = layer_config["model_queryset"]
+        model_instance_pixel_data = queryset.filter(**kwargs)
         for model_instance in model_instance_pixel_data:
-            color_str = layer_config["legend_instance"].get_color_str(model_instance, model_value_fieldname=layer_config["model_value_fieldname"])
+            color_str = legend.get_color_str(model_instance,
+                                             model_value_fieldname=layer_config["model_value_fieldname"])
             model_point = getattr(model_instance, layer_config["model_point_fieldname"])
             # pixel x, y expected to be in spherical-mercator
             # attempt to transform, note if srid is not defined this will generate an error
@@ -134,6 +158,7 @@ class DjangoRasterTileLayerManager(RasterTileManager):
 
             # adjust to upper-left/nw
             upperleft_point = self._adjust_point_to_upperleft(layername, model_point)
+
             # (xmin, ymin, xmax, ymax)
             sphericalmercator_bbox = (upperleft_point.x ,
                                       upperleft_point.y - layer_config["pixel_size"],
