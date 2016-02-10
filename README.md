@@ -3,19 +3,27 @@ tmstiler
 
 Map tile utilities supporting python3.
 
-In a number of projects I used Modest Maps & TileStache to produce spatially aggragated data (geo bin) overlays for OSM with leafletjs.
-At the start of this project these libraries did not yet support python-3
+This project supports map tile creation using python3. 
+(_and the project serves as a personal study of tile maps_)  
 
-This project was started to support the use-case for tile creation in python-3 (_and the project serves as a personal study of tile maps_).  It mimics TileStache in the interface to some degree, but leaves cacheing to higher levels.
+It mimics [TileStache](http://tilestache.org/) in the interface to some degree, but leaves caching to higher levels.
 
-This project contains two classes which are intended for Map Tile generation, 'RasterTileManager' and 'DjangoRasterTileLayerManager'.  'RasterTileManager' provides helper methods.  For transforming spherical mercator (google maps) projected points to tile pixel locations the '.sphericalmercator_to_pixel(zoom, tilex, tiley, xm, ym)' method is available.
-'DjangoRasterTileLayerManager' assumes you have data already *binned* and placed in a django model containing a _PointField_, and can be used to create binned tile overlay images from your django models.
+This project contains two classes intended for use in Map Tile generation:
+ 
+    * RasterTileManager
+    
+    * DjangoRasterTileLayerManager
+      
+'RasterTileManager' provides helper methods for raster space to spherical mercator conversion.
+For transforming spherical mercator (google maps) projected points to tile pixel locations the '.sphericalmercator_to_pixel(zoom, tilex, tiley, xm, ym)' method is available.
+
+'DjangoRasterTileLayerManager' allows you to use data already *binned* and placed in a django model containing a _PointField_, to generate .png tiles.
 
 Sample image created with tiles rendered using the tmstiler's 'DjangoRasterTileLayerManager' in the [safecasttiles](https://github.com/monkut/safecasttiles) project:
 
 ![Safecast Data 2014-10](https://lh5.googleusercontent.com/8Uj8wENmgpN0s59mmbKqwced4z2WaxcFGK-fRp3kXas=s259-p-no)
 
-Below is an excerpt of the [safecasttiles](https://github.com/monkut/safecasttiles) showing how the 'DjangoRasterTileLayerManager' class can be added in django for tile creation.
+Below is an excerpt of the [safecasttiles](https://github.com/monkut/safecasttiles) project, showing how the 'DjangoRasterTileLayerManager' class can be added in django for tile creation.
 
 NOTE:  'DjangoRasterTileLayerManager' requires pillow and django.  ('RasterTileManager' alone has no additional dependencies)
 
@@ -64,12 +72,6 @@ class SafecastMeasurementsTileView(View):
 ```
 
 ##Dependencies
-
-###Required:
-
-The 'RasterTileManager()' class uses the builtin python3 libraries.  It contains the basic methods needed for performing the calculations necessary for building individual TMS map tiles.  (To create the actual tile image files, pillow (PIL) is required, see below.)
-
-- None
 
 ###Optional:
 
