@@ -6,7 +6,8 @@ from PIL import Image, ImageDraw
 from tmstiler.rtm import RasterTileManager
 
 
-SPHERICAL_MERCATOR_SRID = 3857 # google maps projection
+SPHERICAL_MERCATOR_SRID = 3857  # google maps projection
+
 
 class Point:
 
@@ -14,6 +15,7 @@ class Point:
         self.x = x
         self.y = y
         self.srid = srid
+
 
 class DummyMeasurement:
 
@@ -44,6 +46,7 @@ class Legend:
         """
         return "hsl(0,100%,50%)"  # pure red for now...
 
+
 class TestRasterTileManager(unittest.TestCase):
 
     def test_tile_sphericalmercator_extent_munich_z8(self):
@@ -63,14 +66,15 @@ class TestRasterTileManager(unittest.TestCase):
         # http://www.maptiler.org/google-maps-coordinates-tile-bounds-projection/
         expected_extent = (1252344.271424327, 6105178.323193599, 1408887.3053523675, 6261721.357121639)
         actual_extent = rtm.tile_sphericalmercator_extent(z, tilex, tiley)
-        coord_type = {0:"xmin", 1: "ymin", 2:"xmax", 3:"ymax"}
+        coord_type = {0:"xmin", 1: "ymin", 2: "xmax", 3: "ymax"}
         for idx, (actual, expected) in enumerate(zip(actual_extent, expected_extent)):
             msg = "actual_{}({}) != expected_{}({})\nNumber Tiles at zoom:{}".format(coord_type[idx],
-                                                            round(actual, 2),
-                                                            coord_type[idx],
-                                                            round(expected, 2),
-                                                            rtm.tiles_per_dimension(z))
-            msg += "\nSphericalMercator (xmax, ymax): {}, {}".format(rtm.spherical_mercator_xmax, rtm.spherical_mercator_ymax)
+                                                                                     round(actual, 2),
+                                                                                     coord_type[idx],
+                                                                                     round(expected, 2),
+                                                                                     rtm.tiles_per_dimension(z))
+            msg += "\nSphericalMercator (xmax, ymax): {}, {}".format(rtm.spherical_mercator_xmax,
+                                                                     rtm.spherical_mercator_ymax)
             msg += "\nzoom: {}".format(z)
             msg += "\ntilex: {}".format(tilex)
             msg += "\ntiley: {}".format(tiley)
@@ -82,7 +86,7 @@ class TestRasterTileManager(unittest.TestCase):
         """
         Test lower-right coord
         """
-        # Sydney (sphericl mercator)
+        # Sydney (spherical mercator)
         z = 5
         tilex = 29
         tiley = 12
@@ -92,14 +96,15 @@ class TestRasterTileManager(unittest.TestCase):
         # http://www.maptiler.org/google-maps-coordinates-tile-bounds-projection/
         expected_extent = (16280475.528516259, -5009377.085697312, 17532819.79994059, -3757032.814272983)
         actual_extent = rtm.tile_sphericalmercator_extent(z, tilex, tiley)
-        coord_type = {0:"xmin", 1: "ymin", 2:"xmax", 3:"ymax"}
+        coord_type = {0:"xmin", 1: "ymin", 2: "xmax", 3: "ymax"}
         for idx, (actual, expected) in enumerate(zip(actual_extent, expected_extent)):
             msg = "actual_{}({}) != expected_{}({})\nNumber Tiles at zoom:{}".format(coord_type[idx],
-                                                            round(actual, 2),
-                                                            coord_type[idx],
-                                                            round(expected, 2),
-                                                            rtm.tiles_per_dimension(z))
-            msg += "\nSphericalMercator (xmax, ymax): {}, {}".format(rtm.spherical_mercator_xmax, rtm.spherical_mercator_ymax)
+                                                                                     round(actual, 2),
+                                                                                     coord_type[idx],
+                                                                                     round(expected, 2),
+                                                                                     rtm.tiles_per_dimension(z))
+            msg += "\nSphericalMercator (xmax, ymax): {}, {}".format(rtm.spherical_mercator_xmax,
+                                                                     rtm.spherical_mercator_ymax)
             msg += "\nzoom: {}".format(z)
             msg += "\ntilex: {}".format(tilex)
             msg += "\ntiley: {}".format(tiley)
@@ -120,14 +125,15 @@ class TestRasterTileManager(unittest.TestCase):
         # http://www.maptiler.org/google-maps-coordinates-tile-bounds-projection/
         expected_extent = (-8140237.7642581295, -4070118.8821290657, -7827151.696402049, -3757032.814272983)
         actual_extent = rtm.tile_sphericalmercator_extent(z, tilex, tiley)
-        coord_type = {0:"xmin", 1: "ymin", 2:"xmax", 3:"ymax"}
+        coord_type = {0: "xmin", 1: "ymin", 2: "xmax", 3: "ymax"}
         for idx, (actual, expected) in enumerate(zip(actual_extent, expected_extent)):
             msg = "actual_{}({}) != expected_{}({})\nNumber Tiles at zoom:{}".format(coord_type[idx],
-                                                            round(actual, 1),
-                                                            coord_type[idx],
-                                                            round(expected, 1),
-                                                            rtm.tiles_per_dimension(z))
-            msg += "\nSphericalMercator (xmax, ymax): {}, {}".format(rtm.spherical_mercator_xmax, rtm.spherical_mercator_ymax)
+                                                                                     round(actual, 1),
+                                                                                     coord_type[idx],
+                                                                                     round(expected, 1),
+                                                                                     rtm.tiles_per_dimension(z))
+            msg += "\nSphericalMercator (xmax, ymax): {}, {}".format(rtm.spherical_mercator_xmax,
+                                                                     rtm.spherical_mercator_ymax)
             msg += "\nzoom: {}".format(z)
             msg += "\ntilex: {}".format(tilex)
             msg += "\ntiley: {}".format(tiley)
@@ -148,14 +154,15 @@ class TestRasterTileManager(unittest.TestCase):
         # http://www.maptiler.org/google-maps-coordinates-tile-bounds-projection/
         expected_extent = (-10018754.171394622, 5009377.085697312, -9392582.035682458, 5635549.221409474)
         actual_extent = rtm.tile_sphericalmercator_extent(z, tilex, tiley)
-        coord_type = {0:"xmin", 1: "ymin", 2:"xmax", 3:"ymax"}
+        coord_type = {0:"xmin", 1: "ymin", 2: "xmax", 3: "ymax"}
         for idx, (actual, expected) in enumerate(zip(actual_extent, expected_extent)):
             msg = "actual_{}({}) != expected_{}({})\nNumber Tiles at zoom:{}".format(coord_type[idx],
-                                                            round(actual, 1),
-                                                            coord_type[idx],
-                                                            round(expected, 1),
-                                                            rtm.tiles_per_dimension(z))
-            msg += "\nSphericalMercator (xmax, ymax): {}, {}".format(rtm.spherical_mercator_xmax, rtm.spherical_mercator_ymax)
+                                                                                     round(actual, 1),
+                                                                                     coord_type[idx],
+                                                                                     round(expected, 1),
+                                                                                     rtm.tiles_per_dimension(z))
+            msg += "\nSphericalMercator (xmax, ymax): {}, {}".format(rtm.spherical_mercator_xmax,
+                                                                     rtm.spherical_mercator_ymax)
             msg += "\nzoom: {}".format(z)
             msg += "\ntilex: {}".format(tilex)
             msg += "\ntiley: {}".format(tiley)
@@ -171,21 +178,21 @@ class TestRasterTileManager(unittest.TestCase):
         rtm = RasterTileManager()
         expected_extent = (15615167.634322088, 4461476.466949169, 15654303.392804097, 4500612.225431178)
         actual_extent = rtm.tile_sphericalmercator_extent(z, tilex, tiley)
-        coord_type = {0:"xmin", 1: "ymin", 2:"xmax", 3:"ymax"}
+        coord_type = {0: "xmin", 1: "ymin", 2: "xmax", 3: "ymax"}
         for idx, (actual, expected) in enumerate(zip(actual_extent, expected_extent)):
             msg = "actual_{}({}) != expected_{}({})\nNumber Tiles at zoom:{}".format(coord_type[idx],
-                                                            round(actual, 1),
-                                                            coord_type[idx],
-                                                            round(expected, 1),
-                                                            rtm.tiles_per_dimension(z))
-            msg += "\nSphericalMercator (xmax, ymax): {}, {}".format(rtm.spherical_mercator_xmax, rtm.spherical_mercator_ymax)
+                                                                                     round(actual, 1),
+                                                                                     coord_type[idx],
+                                                                                     round(expected, 1),
+                                                                                     rtm.tiles_per_dimension(z))
+            msg += "\nSphericalMercator (xmax, ymax): {}, {}".format(rtm.spherical_mercator_xmax,
+                                                                     rtm.spherical_mercator_ymax)
             msg += "\nzoom: {}".format(z)
             msg += "\ntilex: {}".format(tilex)
             msg += "\ntiley: {}".format(tiley)
             msg += "\nactual extents:   {}".format(actual_extent)
             msg += "\nexpected extents: {}".format(expected_extent)
             self.assertTrue(round(actual, 1) == round(expected, 1), msg)
-
 
     def test_sphericalmercator_to_pixel_japan(self):
         pixel_size_meters = 250
@@ -219,16 +226,18 @@ class TestRasterTileManager(unittest.TestCase):
             while y >= ymin:
                 point = Point(x, y, srid=SPHERICAL_MERCATOR_SRID)
                 m = DummyMeasurement(location=point,
-                                    date=d,
-                                    counts=50,
-                                    value=1)
+                                     date=d,
+                                     counts=50,
+                                     value=1)
                 temp_measurements.append(m)
                 created_measurement_count += 1
                 y -= pixel_size_meters
             x += pixel_size_meters
 
         # create tile image from data
-        tile_image = Image.new("RGBA", (tile_pixel_size, tile_pixel_size), (255,255,255, 0))
+        tile_image = Image.new("RGBA",
+                               (tile_pixel_size, tile_pixel_size),
+                               (255, 255, 255, 0))
         draw = ImageDraw.Draw(tile_image)
         legend = Legend()
         processed_pixel_count = 0
@@ -244,7 +253,7 @@ class TestRasterTileManager(unittest.TestCase):
             # adjust to upper-left/nw
             upperleft_point = pixel.location
             # (xmin, ymin, xmax, ymax)
-            sphericalmercator_bbox = (upperleft_point.x ,
+            sphericalmercator_bbox = (upperleft_point.x,
                                       upperleft_point.y - pixel_size_meters,
                                       upperleft_point.x + pixel_size_meters,
                                       upperleft_point.y)
@@ -305,9 +314,9 @@ class TestRasterTileManager(unittest.TestCase):
             while y >= ymin:
                 point = Point(x, y, srid=SPHERICAL_MERCATOR_SRID)
                 m = DummyMeasurement(location=point,
-                                    date=d,
-                                    counts=50,
-                                    value=1)
+                                     date=d,
+                                     counts=50,
+                                     value=1)
                 temp_measurements.append(m)
                 created_measurement_count += 1
                 y -= pixel_size_meters
@@ -391,16 +400,18 @@ class TestRasterTileManager(unittest.TestCase):
             while y >= ymin:
                 point = Point(x, y, srid=SPHERICAL_MERCATOR_SRID)
                 m = DummyMeasurement(location=point,
-                                    date=d,
-                                    counts=50,
-                                    value=1)
+                                     date=d,
+                                     counts=50,
+                                     value=1)
                 temp_measurements.append(m)
                 created_measurement_count += 1
                 y -= pixel_size_meters
             x += pixel_size_meters
 
         # create tile image from data
-        tile_image = Image.new("RGBA", (tile_pixel_size, tile_pixel_size), (255,255,255, 0))
+        tile_image = Image.new("RGBA",
+                               (tile_pixel_size, tile_pixel_size),
+                               (255, 255, 255, 0))
         draw = ImageDraw.Draw(tile_image)
         legend = Legend()
         processed_pixel_count = 0
@@ -477,16 +488,18 @@ class TestRasterTileManager(unittest.TestCase):
             while y >= ymin:
                 point = Point(x, y, srid=SPHERICAL_MERCATOR_SRID)
                 m = DummyMeasurement(location=point,
-                                    date=d,
-                                    counts=50,
-                                    value=1)
+                                     date=d,
+                                     counts=50,
+                                     value=1)
                 temp_measurements.append(m)
                 created_measurement_count += 1
                 y -= pixel_size_meters
             x += pixel_size_meters
 
         # create tile image from data
-        tile_image = Image.new("RGBA", (tile_pixel_size, tile_pixel_size), (255,255,255, 0))
+        tile_image = Image.new("RGBA",
+                               (tile_pixel_size, tile_pixel_size),
+                               (255, 255, 255, 0))
         draw = ImageDraw.Draw(tile_image)
         legend = Legend()
         processed_pixel_count = 0
@@ -532,4 +545,4 @@ class TestRasterTileManager(unittest.TestCase):
         self.assertTrue(red_percentage >= 0.48, "Resulting Tile image Red({}) < 0.48".format(round(red_percentage, 4)))
 
 if __name__ == '__main__':
-    unittest.main()
+    unittest.main(verbosity=2)
