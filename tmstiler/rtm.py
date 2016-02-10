@@ -8,6 +8,8 @@ class InvalidCoordinateForZoom(Exception):
 class RasterTileManager:
 
     def __init__(self):
+        # About Spherical Mercator
+        # http://docs.openlayers.org/library/spherical_mercator.html
         self.spherical_mercator_xmax = 20037508.34
         self.spherical_mercator_ymax = 20037508.34
         self.spherical_mercator_xmin = -20037508.34
@@ -36,9 +38,11 @@ class RasterTileManager:
         """
         xtiles_at_zoom, ytiles_at_zoom = self.tiles_per_dimension(zoom)
         if not (0 <= tilex <= xtiles_at_zoom):
-            raise InvalidCoordinateForZoom("x({}) not less than expected xtiles_at_zoom({}) for zoom({})!".format(tilex, xtiles_at_zoom, zoom))
+            msg = 'x({}) not less than expected xtiles_at_zoom({}) for zoom({})!'.format(tilex, xtiles_at_zoom, zoom)
+            raise InvalidCoordinateForZoom(msg)
         if not (0 <= tiley <= ytiles_at_zoom):
-            raise InvalidCoordinateForZoom("y({}) not less than expected ytiles_at_zoom({}) for zoom({})!".format(tiley, ytiles_at_zoom, zoom))
+            msg = 'y({}) not less than expected ytiles_at_zoom({}) for zoom({})!'.format(tiley, ytiles_at_zoom, zoom)
+            raise InvalidCoordinateForZoom(msg)
         # note these values are expected to be the same since tiles are squares
         meters_per_xtile_dimension = (self.spherical_mercator_xmax + abs(self.spherical_mercator_xmin))/xtiles_at_zoom
         meters_per_ytile_dimension = (self.spherical_mercator_ymax + abs(self.spherical_mercator_ymin))/ytiles_at_zoom
@@ -103,15 +107,11 @@ class RasterTileManager:
     def tiles_per_dimension(self, zoom):
         """
         Refer to http://wiki.openstreetmap.org/wiki/Slippy_map_tilenames for details
-        :param zoom: Zoom level to calcluate row/column numbers for
+        :param zoom: Zoom level to calculate row/column numbers for
         :return: number of tile columns(x), rows(y) at zoom level
         """
         tile_count = 2**zoom
         # only support square tiles
         assert self.tile_pixels_height == self.tile_pixels_width
         return tile_count, tile_count
-
-
-
-
 
