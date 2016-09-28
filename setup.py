@@ -11,10 +11,10 @@ setup(
     author='Shane C0usins',
     author_email='shane.cousins@gmail.com',
     url='https://github.com/monkut/tmstiles',
-    download_url='https://github.com/monkut/tmstiler/archive/master.zip',
-    keywords=['tiles', 'web-mapping', ],
+    download_url='https://github.com/monkut/tmstiler',
+    keywords=['tiles', 'web-mapping', 'tile-map-service', 'tms'],
     classifiers=[
-      'Development Status :: 4 - Beta',
+      'Development Status :: 5 - Production/Stable',
       'Intended Audience :: Developers',
       'License :: OSI Approved :: MIT License',
       'Programming Language :: Python :: 3',
