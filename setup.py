@@ -7,7 +7,7 @@ setup(
     packages=['tmstiler', ],
     version='0.5',
     license='MIT',
-    description='Utilities for creating and calulating coordinates for Web Map Image tiles',
+    description='Utilities for creating and calculating coordinates for Web Map Image tiles',
     author='Shane C0usins',
     author_email='shane.cousins@gmail.com',
     url='https://github.com/monkut/tmstiler',
