@@ -5,13 +5,13 @@ from distutils.core import setup
 setup(
     name='tmstiler',
     packages=['tmstiler', ],
-    version='0.4',
+    version='0.5',
     license='MIT',
     description='Utilities for Creating TMS tiles',
     author='Shane C0usins',
     author_email='shane.cousins@gmail.com',
-    url='https://github.com/monkut/tmstiles',
-    download_url='https://github.com/monkut/tmstiler',
+    url='https://github.com/monkut/tmstiler',
+    download_url='https://github.com/monkut/tmstiler/tarball/0.5/',
     keywords=['tiles', 'web-mapping', 'tile-map-service', 'tms'],
     classifiers=[
       'Development Status :: 5 - Production/Stable',
