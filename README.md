@@ -71,9 +71,9 @@ class SafecastMeasurementsTileView(View):
         return HttpResponse(image_fileio, content_type=mimetype)
 ```
 
-##Dependencies
+## Dependencies
 
-###Optional:
+### Optional:
 
 The following libraries are needed to make use of the 'DjangoRasterTileLayerManager()' class, for generating custom geo binned data from django Models containing a PointField(). (Currently only square bins are supported, but it should be pretty trival to support Polygon objects)
 
