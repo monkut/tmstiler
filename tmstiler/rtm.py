@@ -1,3 +1,4 @@
+from math import radians, log, tan, cos, pi
 from urllib.parse import urlparse
 
 
@@ -27,6 +28,21 @@ class RasterTileManager:
         layername, z, x, ypart = result.path.rsplit("/", 4)[-4:]
         y, image_format = ypart.split(".")
         return layername, int(z), int(x), int(y), image_format
+
+    def lonlat_to_tile(self, lon, lat, zoom):
+        """
+        Return the tile coordinates for a given longitude, latitude and zoom level.
+        :param lon: (float) longitude in decimal degrees
+        :param lat: (float) latitude in decimal degrees
+        :param zoom: (int) zoom level (0-19)
+        :return: tilex, tiley
+        """
+        assert 0 <= zoom <= 19
+        lat_radians = radians(lat)
+        n = 2.0 ** zoom
+        tilex = int((lon + 180)/360.0 * n)
+        tiley = int((1.0 - log(tan(lat_radians) + (1/cos(lat_radians)))/pi)/2.0 * n)
+        return tilex, tiley
 
     def tile_sphericalmercator_extent(self, zoom, tilex, tiley):
         """
