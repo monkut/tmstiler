@@ -29,7 +29,7 @@ class RasterTileManager:
         y, image_format = ypart.split(".")
         return layername, int(z), int(x), int(y), image_format
 
-    def lonlat_to_tile(self, lon, lat, zoom):
+    def lonlat_to_tile(self, zoom, lon, lat):
         """
         Return the tile coordinates for a given longitude, latitude and zoom level.
         :param lon: (float) longitude in decimal degrees
@@ -43,6 +43,29 @@ class RasterTileManager:
         tilex = int((lon + 180)/360.0 * n)
         tiley = int((1.0 - log(tan(lat_radians) + (1/cos(lat_radians)))/pi)/2.0 * n)
         return tilex, tiley
+
+    def get_neighbor_tiles(self, zoom, tilex, tiley):
+        """
+        Obtain the neighboring tiles for a given tile
+        :param zoom: (int) zoom level
+        :param tilex: (int) tile x
+        :param tiley: (int) tile y
+        :return: (list) [(neighbor_tilex, neighbor_tiley), ...]
+        """
+        max_tiles, _ = self.tiles_per_dimension(zoom)
+        neighbor_tiles = []
+        for x_offset in (-1, 0, 1):
+            for y_offset in (-1, 0, 1):
+                if x_offset == 0 and y_offset == 0:
+                    continue
+                new_tilex = tilex + x_offset
+                new_tiley = tiley + y_offset
+                if new_tilex  < 0 or new_tiley < 0:
+                    continue
+                elif new_tilex >= max_tiles or new_tiley >= max_tiles:
+                    continue
+                neighbor_tiles.append((new_tilex, new_tiley))
+        return neighbor_tiles
 
     def tile_sphericalmercator_extent(self, zoom, tilex, tiley):
         """

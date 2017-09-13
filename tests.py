@@ -549,8 +549,34 @@ class TestRasterTileManager(unittest.TestCase):
         longitude = 7.56198
         latitude = 47.47607
         zoom = 11
-        tilex, tiley = rtmgr.lonlat_to_tile(longitude, latitude, zoom)
+        tilex, tiley = rtmgr.lonlat_to_tile(zoom, longitude, latitude)
         self.assertTrue(tilex == 1067 and tiley == 716)
+
+    def test_get_neighbor_tiles(self):
+        rtmgr = RasterTileManager()
+        zoom = 6
+        tilex = 63
+        tiley = 60
+        actual = rtmgr.get_neighbor_tiles(zoom, tilex, tiley)
+        expected = [(63, 61), (62, 61), (62, 60), (62, 59), (63, 59)]
+        msg = 'actual({}) != expected({})'.format(actual, expected)
+        self.assertTrue(set(actual) == set(expected), msg)
+
+        zoom = 7
+        tilex = 119
+        tiley = 0
+        actual = rtmgr.get_neighbor_tiles(zoom, tilex, tiley)
+        expected = [(118, 1), (119, 1), (120, 1), (118, 0), (120, 0)]
+        msg = 'actual({}) != expected({})'.format(actual, expected)
+        self.assertTrue(set(actual) == set(expected), msg)
+
+        zoom = 11
+        tilex = 1893
+        tiley = 15
+        actual = rtmgr.get_neighbor_tiles(zoom, tilex, tiley)
+        expected = [(1893, 16), (1892, 16), (1894, 16), (1892, 15), (1894, 15), (1892, 14), (1893, 14), (1894, 14)]
+        msg = 'actual({}) != expected({})'.format(actual, expected)
+        self.assertTrue(set(actual) == set(expected), msg)
 
 
 if __name__ == '__main__':
