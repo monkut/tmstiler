@@ -544,5 +544,14 @@ class TestRasterTileManager(unittest.TestCase):
         red_percentage = sum(count for count, color in color_counts if color == red)/sum(count for count, _ in color_counts)
         self.assertTrue(red_percentage >= 0.48, "Resulting Tile image Red({}) < 0.48".format(round(red_percentage, 4)))
 
+    def test_lonlat_to_tile(self):
+        rtmgr = RasterTileManager()
+        longitude = 7.56198
+        latitude = 47.47607
+        zoom = 11
+        tilex, tiley = rtmgr.lonlat_to_tile(longitude, latitude, zoom)
+        self.assertTrue(tilex == 1067 and tiley == 716)
+
+
 if __name__ == '__main__':
     unittest.main(verbosity=2)
