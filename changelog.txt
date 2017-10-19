@@ -1,0 +1,8 @@
+# 0.5.1
+
+- Adding method, `get_neighbor_tiles(zoom, tilex, tiley)`, to make it easy to get neighboring tiles.
+- Adding method, `lonlat_to_tile(lon, lat, zoom)`, to make it easy to identify the related tile.
+
+# 0.5
+
+Initial Release
